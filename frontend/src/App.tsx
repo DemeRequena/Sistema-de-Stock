@@ -2,14 +2,17 @@ import { useEffect, useState } from 'react';
 import { LoginPage } from './pages/LoginPage';
 import { ProductsPage } from './pages/ProductsPage';
 import { MovementsPage } from './pages/MovementsPage';
+import { DashboardPage } from './pages/DashboardPage';
+
 import './App.css';
 import './Nav.css';
 
-type Tab = 'products' | 'movements';
+type Tab = 'dashboard' | 'products' | 'movements';
+
 
 function App() {
   const [isAuthed, setIsAuthed] = useState(false);
-  const [tab, setTab] = useState<Tab>('products');
+  const [tab, setTab] = useState<Tab>('dashboard');
 
   useEffect(() => {
     setIsAuthed(!!localStorage.getItem('access_token'));
@@ -47,10 +50,22 @@ function App() {
         >
           Movimientos
         </button>
+        <button
+          className={tab === 'dashboard' ? 'active' : ''}
+          onClick={() => setTab('dashboard')}
+        >
+          Dashboard
+        </button>
       </nav>
 
       <main className="app-content">
-        {tab === 'products' ? <ProductsPage /> : <MovementsPage />}
+        {tab === 'dashboard' ? (
+          <DashboardPage />
+        ) : tab === 'products' ? (
+          <ProductsPage />
+        ) : (
+          <MovementsPage />
+        )}
       </main>
     </>
   );
