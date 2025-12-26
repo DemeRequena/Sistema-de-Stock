@@ -11,7 +11,7 @@ type CreateProductForm = {
   stockMinimo: number;
 };
 
-export function ProductsPage() {
+export function ProductsPage({ isAdmin }: { isAdmin: boolean }) {
   const [products, setProducts] = useState<Product[]>([]);
   const [activeOnly, setActiveOnly] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -91,8 +91,8 @@ async function toggleActive(id: number, active: boolean) {
     <div className="page">
       <div className="page-header">
         <h2>Productos</h2>
-
-        <label className="toggle">
+        {isAdmin && (
+          <label className="toggle">
           <input
             type="checkbox"
             checked={activeOnly}
@@ -100,12 +100,15 @@ async function toggleActive(id: number, active: boolean) {
           />
           Solo activos
         </label>
+        )}
+        
       </div>
 
       {error && <p className="error">{error}</p>}
 
       <div className="grid">
-        <section className="card">
+        {isAdmin && (
+          <section className="card">
           <h3>Crear producto (ADMIN)</h3>
           <p className="hint">
             Si te da 403, tu usuario es USER. Cambia role a ADMIN y vuelve a loguear.
@@ -163,6 +166,8 @@ async function toggleActive(id: number, active: boolean) {
             <button type="submit">Crear</button>
           </form>
         </section>
+        )}
+        
 
         <section className="card">
           <div className="table-header">
@@ -193,16 +198,18 @@ async function toggleActive(id: number, active: boolean) {
                     <td>{p.stockMinimo}</td>
                     <td>{p.active ? 'Sí' : 'No'}</td>
                     <td className="actions">
-                        {p.active ? (
-                            <button className="danger" onClick={() => toggleActive(p.id, false)}>
-                            Desactivar
-                            </button>
-                        ) : (
-                            <button onClick={() => toggleActive(p.id, true)}>
-                            Activar
-                            </button>
-                        )}
-                    </td>
+                    {isAdmin && (
+                      p.active ? (
+                        <button className="danger" onClick={() => toggleActive(p.id, false)}>
+                          Desactivar
+                        </button>
+                      ) : (
+                        <button onClick={() => toggleActive(p.id, true)}>
+                          Activar
+                        </button>
+                      )
+                    )}
+                  </td>
                   </tr>
                 ))}
                 {products.length === 0 && (

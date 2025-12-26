@@ -105,3 +105,16 @@ button.danger {
 .inactive {
   opacity: 0.5;
 }
+
+.table-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #374151;
+  user-select: none;
+}
+
+.table-toggle input {
+  cursor: pointer;
+}
