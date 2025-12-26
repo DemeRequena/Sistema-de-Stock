@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { LoginPage } from './pages/LoginPage';
+import { ProductsPage } from './pages/ProductsPage';
+import './App.css';
 
 function App() {
   const [isAuthed, setIsAuthed] = useState(false);
@@ -13,20 +15,24 @@ function App() {
   }
 
   return (
-    <div>
-      <h1>Sistema de Gestión de Stock</h1>
-      <button
-        className="secondary"
-        onClick={() => {
-          localStorage.removeItem('access_token');
-          setIsAuthed(false);
-        }}
-      >
-        Cerrar sesión
-      </button>
+    <>
+      <header className="app-header">
+        <h1 className="app-title">Sistema de Gestión de Stock</h1>
+        <button
+          className="secondary"
+          onClick={() => {
+            localStorage.removeItem('access_token');
+            setIsAuthed(false);
+          }}
+        >
+          Cerrar sesión
+        </button>
+      </header>
 
-      <p>Login OK. Siguiente: Productos.</p>
-    </div>
+      <main className="app-content">
+        <ProductsPage />
+      </main>
+    </>
   );
 }
 
