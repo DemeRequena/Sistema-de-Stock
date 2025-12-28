@@ -12,7 +12,6 @@ Sistema sencillo de gestión de stock Full‑Stack con:
 - Backend: Node.js, NestJS, TypeScript, Prisma, PostgreSQL
 - Frontend: React, Vite, TypeScript
 - Autenticación: JWT
-- Tests: Jest
 
 ## Requisitos
 
@@ -113,29 +112,27 @@ Todos los endpoints protegidos requieren la cabecera `Authorization: Bearer <tok
 - Prisma gestiona el esquema y las migraciones contra PostgreSQL.
 - El frontend consume la API y gestiona interacción y autenticación en el cliente.
 
-## Uso con Docker (Postgres rápido)
+## Capturas de pantalla
 
-```bash
-docker run --name sistema-stock-postgres -e POSTGRES_PASSWORD=pass -p 5432:5432 -d postgres:15
-# luego ajustar DATABASE_URL
-```
+### Login
+Vista de inicio de sesión donde el usuario ingresa su correo y contraseña para obtener el token JWT que permite acceder a la aplicación.
 
-## Tests
+![Login](screenshots/login.PNG)
 
-Desde `backend`:
+### Dashboard
+Vista principal con métricas y accesos rápidos a secciones como productos y movimientos.
 
-```bash
-npm run test
-npm run test:e2e
-```
+![Dashboard](screenshots/dashboard.PNG)
 
-## Crear usuario ADMIN (método rápido)
+### Productos
+Listado y gestión de productos: creación, edición, desactivación y visualización de stock.
 
-Registrar por `/auth/register` y después cambiar el rol directamente en la base de datos:
+![Productos](screenshots/productos.PNG)
 
-```sql
-UPDATE "User" SET role='ADMIN' WHERE email='tu@correo';
-```
+### Movimientos
+Registro de entradas y salidas de stock asociados a usuarios y productos; permite filtrar por producto.
+
+![Movimientos](screenshots/movimientos.PNG)
 
 ## Ejemplos de prompts para generar estructura del proyecto
 
@@ -146,12 +143,3 @@ Prompt para estructura del proyecto:
 Prompt para generar README en español:
 
 > "Escribe un README en español para un proyecto llamado 'Sistema Stock' que incluya: descripción, requisitos, pasos detallados para clonar e instalar (backend/frontend), variables de entorno con ejemplos, cómo ejecutar migraciones Prisma, comandos npm principales, endpoints y ejemplos de cómo autenticar con JWT, y una breve guía para crear un usuario admin."
-
-## Notas finales
-
-- No subas archivos `.env` al repositorio.
-- En producción usa `npx prisma migrate deploy` y configura `JWT_SECRET` seguro.
-
----
-
-Archivo creado: `README.md` en la raíz del repositorio.
