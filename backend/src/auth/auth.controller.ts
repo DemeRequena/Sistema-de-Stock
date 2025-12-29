@@ -7,10 +7,8 @@ import { LoginDto } from './dto/login.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('register')
-  register(@Body() dto: RegisterDto) {
-    return this.authService.register(dto.email, dto.password);
-  }
+  // Public registration removed. Users must be created by an ADMIN via POST /users
+  // (Admin-only endpoint implemented in UsersController)
 
   @Post('login')
   login(@Body() dto: LoginDto) {

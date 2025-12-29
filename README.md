@@ -91,8 +91,10 @@ Notas:
 
 ## Endpoints principales
 
-- POST `/auth/register` — { email, password } → crea usuario (role USER por defecto)
+- POST `/users` — { email, password, role? } → crea usuario (solo ADMIN; role por defecto: USER)
 - POST `/auth/login` — { email, password } → { access_token }
+
+> Nota: el endpoint público `/auth/register` se ha eliminado; los usuarios deben ser creados por un ADMIN mediante `POST /users`.
 - Productos: `/products`
   - GET `/products` — listado (JWT requerido)
   - GET `/products/:id`
@@ -104,6 +106,8 @@ Notas:
   - POST `/stock-movements` — crear movimiento (registra userId del token)
 
 Todos los endpoints protegidos requieren la cabecera `Authorization: Bearer <token>`.
+
+- Interfaz: Los ADMIN tienen acceso a la sección **Usuarios** en el frontend (barra lateral) para crear y asignar roles a nuevos usuarios (POST `/users`).
 
 ## Funcionamiento del proyecto
 
