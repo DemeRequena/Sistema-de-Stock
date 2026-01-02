@@ -5,19 +5,30 @@ const prisma = new PrismaClient();
 function parseArgs() {
   const argv = process.argv.slice(2);
   const out = {};
-  argv.forEach((arg) => {
-    if (arg.startsWith('--')) {
-      const without = arg.replace(/^--/, '');
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+    if (!arg.startsWith('--')) continue;
+    const without = arg.replace(/^--/, '');
+    if (without.includes('=')) {
       const [k, v] = without.split('=');
-      out[k] = v === undefined ? true : v;
+      out[k] = v;
+    } else {
+      const next = argv[i + 1];
+      if (next && !next.startsWith('--')) {
+        out[without] = next;
+        i++;
+      } else {
+        out[without] = true;
+      }
     }
-  });
+  }
   return out;
-}
+} 
 
 async function main() {
   const args = parseArgs();
-  const email = args.email || process.env.ADMIN_EMAIL || 'admin@local';
+  // Default admin email and password for automated seed
+  const email = args.email || process.env.ADMIN_EMAIL || 'admin@admin.com';
   const password = args.password || process.env.ADMIN_PASS || '123456';
 
   const existing = await prisma.user.findUnique({ where: { email } });
@@ -37,11 +48,18 @@ async function main() {
   console.log(`Created admin user ${email}`);
 }
 
+let exitCode = 0;
 main()
   .catch((e) => {
     console.error(e);
-    process.exit(1);
+    exitCode = 1;
   })
   .finally(async () => {
-    await prisma.$disconnect();
+    try {
+      await prisma.$disconnect();
+    } catch (err) {
+      console.error('Error disconnecting prisma', err);
+    }
+    // Ensure process exits to avoid hanging containers
+    process.exit(exitCode);
   });

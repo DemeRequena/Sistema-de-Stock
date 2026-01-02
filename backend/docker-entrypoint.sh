@@ -19,7 +19,8 @@ npx prisma generate
 # Seed admin user (defaults: admin@local / 123456)
 export ADMIN_EMAIL=${ADMIN_EMAIL:-admin@local}
 export ADMIN_PASS=${ADMIN_PASS:-123456}
-node prisma/seed.js --email "$ADMIN_EMAIL" --password "$ADMIN_PASS" || true
+# Run seed using environment variables so parsing is unnecessary
+node prisma/seed.js || true
 
 # Start the server (dev or prod)
 if [ "$NODE_ENV" = "production" ]; then
