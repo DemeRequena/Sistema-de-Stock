@@ -16,9 +16,10 @@ Sistema sencillo de gestión de stock Full‑Stack con:
 ## Requisitos
 
 - Git
-- Node.js 18+ y npm
-- PostgreSQL (local o en Docker)
-- (Opcional) Docker
+- Node.js 18+ y npm (para ejecutar backend y frontend)
+- Docker (para levantar la base de datos PostgreSQL en un contenedor)
+- WSL (si usas Windows, para compatibilidad con Docker; instala WSL2 si no lo tienes)
+- React y TypeScript (se instalan automáticamente con npm en los proyectos respectivos)
 
 ## Configuración rápida (Backend y Frontend locales, DB en Docker)
 
@@ -78,35 +79,6 @@ Notas:
 - `JWT_SECRET` tiene un valor por defecto en el código (`supersecret`) si no se provee, pero en producción debe configurarse.
 
 ---
-
-## Usar con Docker (opcional, levanta todo en contenedores)
-
-Se provee una configuración de `docker-compose.yml` para levantar la base de datos (Postgres), el backend y el frontend de desarrollo.
-
-Pasos básicos:
-
-1. Construir y levantar todos los servicios:
-
-```bash
-# en la raíz del repositorio
-docker compose up --build
-```
-
-2. Acceder:
-- Frontend (Vite dev server): http://localhost:5173
-- Backend API: http://localhost:3000
-
-3. Credenciales admin (creadas por el seed en la primera ejecución):
-- Email: `admin@demo.com`
-- Password: `123456`
-
-Notas y configuraciones:
-- El `docker-compose.yml` define la variable `DATABASE_URL` apuntando al servicio `db`. Si quieres cambiarla, edita `backend/.env` o `docker-compose.yml`.
-- El seed que crea el usuario admin se ejecuta automáticamente desde `backend/docker-entrypoint.sh`. Si quieres cambiar credenciales, exporta `ADMIN_EMAIL` y `ADMIN_PASS` en el entorno o en `docker-compose.yml`.
-- Para producción conviene usar un build multi-stage y servir el `frontend/dist` desde un servidor estático (nginx) en lugar del Vite dev server.
-
----
-
 
 ## Scripts importantes
 
