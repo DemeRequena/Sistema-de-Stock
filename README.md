@@ -16,11 +16,12 @@ Sistema sencillo de gestión de stock Full‑Stack con:
 ## Requisitos
 
 - Git
-- Node.js 18+ y npm
-- PostgreSQL (local o en Docker)
-- (Opcional) Docker
+- Node.js 18+ y npm (para ejecutar backend y frontend)
+- Docker (para levantar la base de datos PostgreSQL en un contenedor)
+- WSL (si usas Windows, para compatibilidad con Docker; instala WSL2 si no lo tienes)
+- React y TypeScript (se instalan automáticamente con npm en los proyectos respectivos)
 
-## Configuración rápida
+## Configuración rápida (Backend y Frontend locales, DB en Docker)
 
 1. Clonar el repositorio:
 
@@ -29,30 +30,31 @@ git clone <repo-url>
 cd Sistema_Stock
 ```
 
-2. Backend:
+2. Levantar la base de datos con Docker:
+
+```bash
+docker compose up -d db
+```
+
+Esto inicia PostgreSQL en `localhost:5432` con usuario `postgres`, contraseña `postgres` y base de datos `sistema_stock`.
+
+3. Backend:
 
 ```bash
 cd backend
 npm install
 ```
 
-- Crear archivo `.env` en `backend/` (ejemplo más abajo).
-- Ejecutar migraciones:
+- Crear archivo `.env` en `backend/` (ver ejemplo abajo).
+- Ejecutar en modo desarrollo (incluye migraciones, generación de Prisma y seeding automático):
 
 ```bash
-npx prisma migrate dev --name init
-npx prisma generate
+npm run dev
 ```
 
-- Ejecutar en modo desarrollo:
+El backend escucha por defecto en: `http://localhost:3000`. El seeding crea un usuario admin con email `admin@demo.com` y contraseña `123456`.
 
-```bash
-npm run start:dev
-```
-
-El backend escucha por defecto en: `http://localhost:3000`
-
-3. Frontend:
+4. Frontend:
 
 ```bash
 cd frontend
@@ -63,12 +65,12 @@ npm run dev
 Vite sirve por defecto en `http://localhost:5173`.
 Si necesitas apuntar a otra URL del backend, edita `frontend/src/config.ts` (const `API_BASE_URL`).
 
-4. Abrir la app en el navegador: `http://localhost:5173`
+5. Abrir la app en el navegador: `http://localhost:5173`
 
 ## Variables de entorno (ejemplo `.env` en `backend/`)
 
 ```
-DATABASE_URL="postgresql://user:password@localhost:5432/sistema_stock"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/sistema_stock"
 JWT_SECRET="cambiar_por_algo_seguro"
 ```
 
@@ -76,10 +78,13 @@ Notas:
 - `DATABASE_URL` es obligatorio para Prisma.
 - `JWT_SECRET` tiene un valor por defecto en el código (`supersecret`) si no se provee, pero en producción debe configurarse.
 
+---
+
 ## Scripts importantes
 
 ### Backend (`backend/package.json`)
-- `npm run start:dev` — iniciar servidor en modo watch
+- `npm run dev` — iniciar servidor en modo desarrollo con DB setup automático (migraciones, generate y seed)
+- `npm run start:dev` — iniciar servidor en modo watch (sin DB setup)
 - `npm run start` — iniciar servidor (producción)
 - `npm run build` — construir
 - `npm run test` — ejecutar tests
@@ -91,8 +96,10 @@ Notas:
 
 ## Endpoints principales
 
-- POST `/auth/register` — { email, password } → crea usuario (role USER por defecto)
+- POST `/users` — { email, password, role? } → crea usuario (solo ADMIN; role por defecto: USER)
 - POST `/auth/login` — { email, password } → { access_token }
+
+> Nota: el endpoint público `/auth/register` se ha eliminado; los usuarios deben ser creados por un ADMIN mediante `POST /users`.
 - Productos: `/products`
   - GET `/products` — listado (JWT requerido)
   - GET `/products/:id`
@@ -104,6 +111,8 @@ Notas:
   - POST `/stock-movements` — crear movimiento (registra userId del token)
 
 Todos los endpoints protegidos requieren la cabecera `Authorization: Bearer <token>`.
+
+- Interfaz: Los ADMIN tienen acceso a la sección **Usuarios** en el frontend (barra lateral) para crear y asignar roles a nuevos usuarios (POST `/users`).
 
 ## Funcionamiento del proyecto
 

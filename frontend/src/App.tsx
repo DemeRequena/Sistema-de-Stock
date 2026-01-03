@@ -3,6 +3,7 @@ import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { ProductsPage } from './pages/ProductsPage';
 import { MovementsPage } from './pages/MovementsPage';
+import { AdminUsersPage } from './pages/AdminUsersPage';
 
 import type { Role } from './types';
 import { clearToken, getRoleFromToken, getToken, isTokenExpired } from './lib/auth';
@@ -10,7 +11,7 @@ import { clearToken, getRoleFromToken, getToken, isTokenExpired } from './lib/au
 import './App.css';
 import './Nav.css';
 
-type Tab = 'dashboard' | 'products' | 'movements';
+type Tab = 'dashboard' | 'products' | 'movements' | 'users';
 
 function App() {
   const [isAuthed, setIsAuthed] = useState(false);
@@ -57,6 +58,7 @@ function App() {
             clearToken();
             setIsAuthed(false);
             setRole(null);
+            setTab('dashboard'); // reset tab on logout to avoid showing stale admin screens
           }}
         >
           Cerrar sesión
@@ -79,8 +81,11 @@ function App() {
           Movimientos
         </button>
 
-        {/* Cuando implementemos Users, lo mostramos solo a ADMIN */}
-        {/* {isAdmin && <button ...>Usuarios</button>} */}
+        {isAdmin && (
+          <button className={tab === 'users' ? 'active' : ''} onClick={() => setTab('users')}>
+            Usuarios
+          </button>
+        )}
       </nav>
 
       <main className="app-content">
@@ -88,8 +93,17 @@ function App() {
           <DashboardPage />
         ) : tab === 'products' ? (
           <ProductsPage isAdmin={isAdmin} />
-        ) : (
+        ) : tab === 'movements' ? (
           <MovementsPage />
+        ) : tab === 'users' ? (
+          isAdmin ? (
+            <AdminUsersPage onUnauthorized={() => setTab('dashboard')} />
+          ) : (
+            // If somehow a non-admin has the users tab selected, fall back to dashboard
+            <DashboardPage />
+          )
+        ) : (
+          <DashboardPage />
         )}
       </main>
     </>
