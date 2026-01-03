@@ -20,7 +20,7 @@ Sistema sencillo de gestión de stock Full‑Stack con:
 - PostgreSQL (local o en Docker)
 - (Opcional) Docker
 
-## Configuración rápida
+## Configuración rápida (Backend y Frontend locales, DB en Docker)
 
 1. Clonar el repositorio:
 
@@ -29,30 +29,31 @@ git clone <repo-url>
 cd Sistema_Stock
 ```
 
-2. Backend:
+2. Levantar la base de datos con Docker:
+
+```bash
+docker compose up -d db
+```
+
+Esto inicia PostgreSQL en `localhost:5432` con usuario `postgres`, contraseña `postgres` y base de datos `sistema_stock`.
+
+3. Backend:
 
 ```bash
 cd backend
 npm install
 ```
 
-- Crear archivo `.env` en `backend/` (ejemplo más abajo).
-- Ejecutar migraciones:
+- Crear archivo `.env` en `backend/` (ver ejemplo abajo).
+- Ejecutar en modo desarrollo (incluye migraciones, generación de Prisma y seeding automático):
 
 ```bash
-npx prisma migrate dev --name init
-npx prisma generate
+npm run dev
 ```
 
-- Ejecutar en modo desarrollo:
+El backend escucha por defecto en: `http://localhost:3000`. El seeding crea un usuario admin con email `admin@demo.com` y contraseña `123456`.
 
-```bash
-npm run start:dev
-```
-
-El backend escucha por defecto en: `http://localhost:3000`
-
-3. Frontend:
+4. Frontend:
 
 ```bash
 cd frontend
@@ -63,12 +64,12 @@ npm run dev
 Vite sirve por defecto en `http://localhost:5173`.
 Si necesitas apuntar a otra URL del backend, edita `frontend/src/config.ts` (const `API_BASE_URL`).
 
-4. Abrir la app en el navegador: `http://localhost:5173`
+5. Abrir la app en el navegador: `http://localhost:5173`
 
 ## Variables de entorno (ejemplo `.env` en `backend/`)
 
 ```
-DATABASE_URL="postgresql://user:password@localhost:5432/sistema_stock"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/sistema_stock"
 JWT_SECRET="cambiar_por_algo_seguro"
 ```
 
@@ -78,7 +79,7 @@ Notas:
 
 ---
 
-## Usar con Docker ✅
+## Usar con Docker (opcional, levanta todo en contenedores)
 
 Se provee una configuración de `docker-compose.yml` para levantar la base de datos (Postgres), el backend y el frontend de desarrollo.
 
@@ -96,7 +97,7 @@ docker compose up --build
 - Backend API: http://localhost:3000
 
 3. Credenciales admin (creadas por el seed en la primera ejecución):
-- Email: `admin@local`
+- Email: `admin@demo.com`
 - Password: `123456`
 
 Notas y configuraciones:
@@ -110,7 +111,8 @@ Notas y configuraciones:
 ## Scripts importantes
 
 ### Backend (`backend/package.json`)
-- `npm run start:dev` — iniciar servidor en modo watch
+- `npm run dev` — iniciar servidor en modo desarrollo con DB setup automático (migraciones, generate y seed)
+- `npm run start:dev` — iniciar servidor en modo watch (sin DB setup)
 - `npm run start` — iniciar servidor (producción)
 - `npm run build` — construir
 - `npm run test` — ejecutar tests
