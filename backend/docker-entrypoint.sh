@@ -17,7 +17,7 @@ done
 npx prisma generate
 
 # Seed admin user (defaults: admin@local / 123456)
-export ADMIN_EMAIL=${ADMIN_EMAIL:-admin@local}
+export ADMIN_EMAIL=${ADMIN_EMAIL:-admin@demo.com}
 export ADMIN_PASS=${ADMIN_PASS:-123456}
 # Run seed using environment variables so parsing is unnecessary
 node prisma/seed.js || true

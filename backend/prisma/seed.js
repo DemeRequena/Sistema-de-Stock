@@ -28,7 +28,7 @@ function parseArgs() {
 async function main() {
   const args = parseArgs();
   // Default admin email and password for automated seed
-  const email = args.email || process.env.ADMIN_EMAIL || 'admin@admin.com';
+  const email = args.email || process.env.ADMIN_EMAIL || 'admin@demo.com';
   const password = args.password || process.env.ADMIN_PASS || '123456';
 
   const existing = await prisma.user.findUnique({ where: { email } });
